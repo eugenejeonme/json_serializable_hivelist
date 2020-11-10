@@ -1,6 +1,7 @@
 name: json_serializable_hivelist
 description: Adding support for HiveList for json_serializable
 version: 0.0.1
+homepage: https://github.com/thenextappnl/json_serializable_hivelist
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
