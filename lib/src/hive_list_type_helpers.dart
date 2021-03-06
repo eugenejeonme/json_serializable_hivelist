@@ -17,15 +17,15 @@ class HiveListTypeHelper extends TypeHelper<TypeHelperContextWithConfig> {
   const HiveListTypeHelper();
 
   @override
-  String serialize(DartType targetType, String expression,
+  Object? serialize(DartType targetType, String expression,
       TypeHelperContextWithConfig context) {
     //default iterable helper will serialize all iterables fine
     return null;
   }
 
   @override
-  String deserialize(DartType targetType, String expression,
-      TypeHelperContextWithConfig context) {
+  Object? deserialize(DartType targetType, String expression,
+      TypeHelperContextWithConfig context, bool defaultProvided) {
     if (!(coreIterableTypeChecker.isExactlyType(targetType) ||
         hiveListTypeChecker.isExactlyType(targetType))) {
       return null;
@@ -36,12 +36,14 @@ class HiveListTypeHelper extends TypeHelper<TypeHelperContextWithConfig> {
 
     var output = '$expression as HiveList';
 
+    final targetTypeIsNullable = targetType.isDartCoreNull || defaultProvided;
+
     // If `itemSubVal` is the same and it's not a Set, then we don't need to do
     // anything fancy
     if (closureArg == itemSubVal &&
         hiveListTypeChecker.isExactlyType(targetType)) {
       return wrapNullableIfNecessary(
-          expression, '($output)', context.nullable);
+          expression, '($output)', targetTypeIsNullable);
     }
 
     output = '($output)';
@@ -51,7 +53,7 @@ class HiveListTypeHelper extends TypeHelper<TypeHelperContextWithConfig> {
       output += '.map($lambda)';
     }
 
-    return wrapNullableIfNecessary(expression, output, context.nullable);
+    return wrapNullableIfNecessary(expression, output, targetTypeIsNullable);
   }
 }
 
